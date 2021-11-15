@@ -1,1 +1,2 @@
 # PoL
+A JavaScript project
