@@ -55,7 +55,7 @@
                 <div class="card">
                   <div class="card-body">
                     <div id="maintable-table" class="table-editable">
-                      <table class="table table-bordered table-sm table-responsive-md table-striped text-center">
+                      <table id='users_table' class="table table-bordered table-sm table-responsive-md table-striped text-center">
                         <thead>
                           <tr>
                             <th class="text-center">User Id</th>
@@ -137,25 +137,20 @@
     var res = sha256(text);
     console.log("Here is the hash friend: " + res);
     const $tableID = $('#maintable-table'); 
-    // const $BTN = $('#export-btn'); 
-    // const $EXPORT = $('#export');
 
 
     $("#btn-add-user").click(function () { 
 
-      $("#maintable-table").each(function () {
-        
-          var tds = '<tr>';
-          jQuery.each($('tr:last td', this), function () {
-              tds += '<td class="pt-3-half" contenteditable="true">' + $(this).html() + '</td>';
-          });
-          tds += '</tr>';
-          if ($('tbody', this).length > 0) {
-              $('tbody', this).append(tds);
-          } else {
-              $(this).append(tds);
-          }
-      });
+      var toAppend = '<tr>';
+
+      toAppend += '<td class="pt-3-half" contenteditable="true">user_id</td>';
+      toAppend += '<td class="pt-3-half" contenteditable="true">amount</td>';
+      toAppend += '<td class="pt-3-half" contenteditable="true">commitment</td>';
+      toAppend += '<td><span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span></td>';
+      toAppend += '</tr>';
+
+      $("#users_table").append(toAppend);
+
     });
 
     $tableID.on('click', '.table-remove', function () { $(this).parents('tr').detach(); });
