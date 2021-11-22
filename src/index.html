@@ -12,9 +12,6 @@
   <style>
     .node rect {
       stroke-width: 10px;
-      border-width: 10px;
-      border-style: solid;
-      border-color: black;
     }
 
     .node text {
@@ -109,16 +106,8 @@
                     </table>
                     <div class="row">
                       <div class="col-11"></div>
-                      <div class="col-1"><button type="button" class="btn bottom-0 end-0 btn-success"
+                      <div class="col-1"><button type="button" class="btn bottom-0 end-0 btn-primary"
                           id="btn-add-user">Add</button></div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-1">
-                        <button type="button" class="btn bottom-0 btn-primary"
-                        id="btn-add-user">Save</button>
-                      </div>
-                      <div class="col-11"></div>
                     </div>
                   </div>
                 </div>
@@ -130,7 +119,7 @@
             </div>
           </div>
           <div class="tab-pane fade" id="nav-tree" role="tabpanel" aria-labelledby="nav-tree-tab">
-            <graph></graph>
+            <graph id='merkle-graph'></graph>
           </div>
           <div class="tab-pane fade" id="nav-verify" role="tabpanel" aria-labelledby="nav-verify-tab">Verify auth path
           </div>
