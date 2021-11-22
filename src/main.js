@@ -59,7 +59,7 @@ $("#btn-add-user").click(function () {
   var toAppend = '<tr>';
   toAppend += '<td class="pt-3-half user-id" contenteditable="true">user_id</td>';
   toAppend += '<td class="pt-3-half user-amount" contenteditable="true">amount</td>';
-  toAppend += '<td class="pt-3-half user-commitment" contenteditable="true">commitment</td>';
+  toAppend += '<td class="pt-3-half user-commitment">commitment</td>';
   toAppend += '<td><span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span></td>';
   toAppend += '</tr>';
 
@@ -89,13 +89,9 @@ $("#nav-tree-tab").click(function () {
     }
   });
 
-  console.log(convertedIntoArray);
-
   let treeArr = buildTree(convertedIntoArray);
-  console.log(treeArr);
 
   let diagramData = treeArrToTreeData(treeArr);
-  console.log(diagramData);
 
   buildDiagram(diagramData);
 });
@@ -162,8 +158,6 @@ function buildTree(records) {
     }
   }
 
-  console.log(leafLevel);
-
   let levels = [];
   levels.push(leafLevel);
 
@@ -179,8 +173,6 @@ function buildTree(records) {
     levels.push(nextLevel);
     currLevel = nextLevel;
   }
-
-  console.log(levels);
 
   let res = [];
   for (let i = levels.length; i >= 0; i--) {
@@ -222,9 +214,6 @@ function buildDiagram(treeData) {
   root = d3.hierarchy(treeData, function (d) { return d.children; });
   root.x0 = height / 2;
   root.y0 = 0;
-
-  console.log(root.children);
-  console.log(collapse);
 
   if (root.children) {
     // Collapse after the second level
