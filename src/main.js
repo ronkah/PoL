@@ -67,6 +67,14 @@ $("#btn-add-user").click(function () {
 });
 
 
+function shortHash(hash) {
+  let first = hash.substring(0,3);
+  let last = hash.substr(hash.length - 3);
+
+  return first + '...' + last;
+}
+
+
 $("#nav-tree-tab").click(function () {
 
   // table to array object
@@ -99,7 +107,7 @@ $("#nav-tree-tab").click(function () {
 
 function treeArrToTreeData(array) {
   let idx = 1;
-  let res = { name: "Balance " + array[idx - 1].amount, fill: "orange", subname: array[idx - 1].commitment }
+  let res = { name: "Balance " + array[idx - 1].amount, fill: "orange", subname: shortHash(array[idx - 1].commitment) }
   res.children = [];
   // left child
 
@@ -122,7 +130,7 @@ function recursivee(idx, array) {
     return ""
   }
 
-  let res = { name: "Balance " + array[idx - 1].amount, fill: "orange", subname: array[idx - 1].commitment }
+  let res = { name: "Balance " + array[idx - 1].amount, fill: "orange", subname: shortHash(array[idx - 1].commitment) }
   res.children = [];
 
   // left child
