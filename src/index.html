@@ -43,8 +43,8 @@
         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
           <button class="nav-link active" id="nav-desc-tab" data-bs-toggle="tab" data-bs-target="#nav-desc"
             type="button" role="tab" aria-controls="nav-desc" aria-selected="true">Description</button>
-          <button class="nav-link" id="nav-data-tab" data-bs-toggle="tab" data-bs-target="#nav-data"
-            type="button" role="tab" aria-controls="nav-data" aria-selected="true">Load Data</button>
+          <button class="nav-link" id="nav-data-tab" data-bs-toggle="tab" data-bs-target="#nav-data" type="button"
+            role="tab" aria-controls="nav-data" aria-selected="true">Load Data</button>
           <button class="nav-link" id="nav-tree-tab" data-bs-toggle="tab" data-bs-target="#nav-tree" type="button"
             role="tab" aria-controls="nav-tree" aria-selected="false">Build Tree</button>
           <button class="nav-link" id="nav-verify-tab" data-bs-toggle="tab" data-bs-target="#nav-verify" type="button"
@@ -54,33 +54,47 @@
       <div class="row">
         <div class="card">
           <div class="card-body">
-        <div class="tab-content" id="nav-tabContent">
-          <div class="tab-pane fade show active" id="nav-desc" role="tabpanel" aria-labelledby="nav-desc-tab">
-            <div class="row justify-content-center">
-              <h1 class="display-5 text-center">Proof of Liability</h1>
-            </div>
+            <div class="tab-content" id="nav-tabContent">
+              <div class="tab-pane fade show active" id="nav-desc" role="tabpanel" aria-labelledby="nav-desc-tab">
+                <div class="row justify-content-center">
+                  <h1 class="display-5 text-center">Proof of Liability</h1>
+                </div>
+<!-- 
+                <div class="row">
+                  <h1 class="display-7 text-center">Introduction</h1>
+                </div> -->
+                <div class="row">
+                  <h1 class="display-7 offset-md-1">Introduction</h1>
+                </div>
 
-            <div class="row justify-content-center">
-              <h1 class="display-7 text-center">Introduction</h1>
-            </div>
+                <div class="row">
+                  <div class="col-md-9 offset-md-1">
+                    <p>Proof of Liabilities (PoL) is a scheme designed to let companies that accept monetary deposits from
+                      consumers (e.g. Bitcoin exchanges, gambling websites, online Bitcoin wallets, etc.) prove their
+                      total amount of deposits (their liabilities) without compromising the privacy of individual users.
+                    </p>
+                  </div>
+                </div>
 
 
-            <div class="row text-center">
-            <p>Proof of Liabilities (PoL) is a scheme designed to let companies that accept monetary deposits from consumers (e.g. Bitcoin exchanges, gambling websites, online Bitcoin wallets, etc.) prove their total amount of deposits (their liabilities) without compromising the privacy of individual users.
-            </p>
-            </div>
+                <div class="row">
+                  <h1 class="display-7 offset-md-1">How does it work?</h1>
+                </div>
 
-            
-            <div class="row justify-content-center">
-              <h1 class="display-7 text-center">How does it work?</h1>
+                <div class="row">
+                  <div class="col-md-9 offset-md-1">
+                    <ol>
+                      <li class="mt-2"><strong>Build users data set</strong> - for each user we'll compute his commitment by \(sha256(Id_{user} | balance_{user}) = commitment_{user}\).</li>
+                      <li class="mt-2"><strong>Build a liability tree</strong> - based on the users' data set we'll build a summation merkle tree.</li>
+                      <li class="mt-2"><strong>The total liability</strong> - will be at the root of the tree. All leafs will be sums up to the root. </li>
+                      <li class="mt-2"><strong>Each user can verify</strong> that his liability were taken into account by verify the path from his commitment at the leaf to the published root by Celsius.</li>
+                    </ol>
+                  </div>
+                </div>
 
-              
-            </div>
-
-
-          </div>
-          <div class="tab-pane fade" id="nav-data" role="tabpanel" aria-labelledby="nav-data-tab">
-            <div class="row">
+              </div>
+              <div class="tab-pane fade" id="nav-data" role="tabpanel" aria-labelledby="nav-data-tab">
+                <div class="row">
 
                   <div id="maintable-table" class="table-editable">
                     <table id='users_table'
@@ -96,7 +110,8 @@
                         <tr>
                           <td class="pt-3-half user-id" contenteditable="true">Ron@gmail.com</td>
                           <td class="pt-3-half user-amount" contenteditable="true">30</td>
-                          <td class="pt-3-half user-commitment">0eacb4896fa4a123c71dc111b96ff6d00ad654e5943075a250ec11ec50d40aac</td>
+                          <td class="pt-3-half user-commitment">
+                            0eacb4896fa4a123c71dc111b96ff6d00ad654e5943075a250ec11ec50d40aac</td>
                           <td>
                             <span class="table-remove"><button type="button"
                                 class="btn btn-danger btn-rounded btn-sm my-0">
@@ -108,7 +123,8 @@
                         <tr>
                           <td class="pt-3-half user-id" contenteditable="true">Shimi@gmail.com</td>
                           <td class="pt-3-half user-amount" contenteditable="true">45</td>
-                          <td class="pt-3-half user-commitment">af5248ac3a481fa9af6c03fdb4071faf509e9738d28db0945b15f99d244d89c0</td>
+                          <td class="pt-3-half user-commitment">
+                            af5248ac3a481fa9af6c03fdb4071faf509e9738d28db0945b15f99d244d89c0</td>
                           <td>
                             <span class="table-remove"><button type="button"
                                 class="btn btn-danger btn-rounded btn-sm my-0">
@@ -120,7 +136,8 @@
                         <tr>
                           <td class="pt-3-half user-id" contenteditable="true">Guadalupe@gmail.com</td>
                           <td class="pt-3-half user-amount" contenteditable="true">3</td>
-                          <td class="pt-3-half user-commitment">5c3b1cb5348d6dbc5697c6209a2b4814bd6be725f6cd4c10bdb15f4a55eaa591</td>
+                          <td class="pt-3-half user-commitment">
+                            5c3b1cb5348d6dbc5697c6209a2b4814bd6be725f6cd4c10bdb15f4a55eaa591</td>
                           <td>
                             <span class="table-remove"><button type="button"
                                 class="btn btn-danger btn-rounded btn-sm my-0">
@@ -139,18 +156,19 @@
                   </div>
 
 
+                </div>
+                <div class="row">
+                  <div id="users-table"></div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="nav-tree" role="tabpanel" aria-labelledby="nav-tree-tab">
+                <graph id='merkle-graph'></graph>
+              </div>
+              <div class="tab-pane fade" id="nav-verify" role="tabpanel" aria-labelledby="nav-verify-tab">Verify auth
+                path
+              </div>
             </div>
-            <div class="row">
-              <div id="users-table"></div>
-            </div>
           </div>
-          <div class="tab-pane fade" id="nav-tree" role="tabpanel" aria-labelledby="nav-tree-tab">
-            <graph id='merkle-graph'></graph>
-          </div>
-          <div class="tab-pane fade" id="nav-verify" role="tabpanel" aria-labelledby="nav-verify-tab">Verify auth path
-          </div>
-        </div>
-        </div>
         </div>
       </div>
     </div>
@@ -170,11 +188,10 @@
     integrity="sha512-szJ5FSo9hEmXXe7b5AUVtn/WnL8a5VofnFeYC2i2z03uS2LhAch7ewNLbl5flsEmTTimMN0enBZg/3sQ+YOSzQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="main.js"></script>
-  <script>
+  <script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
 
-
-
-  </script>
 </body>
 
 </html>

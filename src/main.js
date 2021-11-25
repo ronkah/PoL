@@ -32,6 +32,8 @@
 //   ]
 // };
 
+const graphColor = ['#0E1766','#710BC2','#F63AAC','#d281d2', '#7aa0cb', '#d281d2','#000000','#F6EBFF'];
+
 const $tableID = $('#maintable-table');
 $tableID.on('click', '.table-remove', function () { $(this).parents('tr').detach(); });
 $tableID.on('click', '.table-up', function () {
@@ -58,7 +60,7 @@ $tableID.on('click', '.table-down', function () {
 $("#btn-add-user").click(function () {
   var toAppend = '<tr>';
   toAppend += '<td class="pt-3-half user-id" contenteditable="true">user_id</td>';
-  toAppend += '<td class="pt-3-half user-amount" contenteditable="true">amount</td>';
+  toAppend += '<td class="pt-3-half user-amount" contenteditable="true">0</td>';
   toAppend += '<td class="pt-3-half user-commitment">commitment</td>';
   toAppend += '<td><span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span></td>';
   toAppend += '</tr>';
@@ -68,10 +70,12 @@ $("#btn-add-user").click(function () {
 
 
 function shortHash(hash) {
-  let first = hash.substring(0,3);
-  let last = hash.substr(hash.length - 3);
+  let trimmedHash = hash.trim();
+  let first = trimmedHash.substring(0,3);
+  let last = trimmedHash.substring(trimmedHash.length - 3);
+  let res = first + '...' + last;
 
-  return first + '...' + last;
+  return res;
 }
 
 
@@ -106,41 +110,42 @@ $("#nav-tree-tab").click(function () {
 
 
 function treeArrToTreeData(array) {
+  let level = 0;
   let idx = 1;
-  let res = { name: "Balance " + array[idx - 1].amount, fill: "orange", subname: shortHash(array[idx - 1].commitment) }
+  let res = { name: "Balance " + array[idx - 1].amount, fill: graphColor[level], subname: shortHash(array[level].commitment) }
   res.children = [];
   // left child
 
-  let left = recursivee(idx + 1, array);
+  let left = recursivee(idx + 1, level + 1, array);
   if (left) {
     res.children.push(left);
   }
 
   // right child
 
-  let right = recursivee(idx + 2, array);
+  let right = recursivee(idx + 2, level + 1, array);
   if (right) {
     res.children.push(right);
   }
   return res;
 }
 
-function recursivee(idx, array) {
+function recursivee(idx, level, array) {
   if (idx > array.length) {
     return ""
   }
 
-  let res = { name: "Balance " + array[idx - 1].amount, fill: "orange", subname: shortHash(array[idx - 1].commitment) }
+  let res = { name: "Balance " + array[idx - 1].amount, fill: graphColor[level], subname: shortHash(array[idx - 1].commitment) }
   res.children = [];
 
   // left child
-  let left = recursivee(idx * 2, array);
+  let left = recursivee(idx * 2, level+1, array);
   if (left) {
     res.children.push(left);
   }
 
   // right child
-  let right = recursivee((idx * 2) + 1, array);
+  let right = recursivee((idx * 2) + 1, level+1, array);
   if (right) {
     res.children.push(right);
   }
