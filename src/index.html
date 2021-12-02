@@ -109,10 +109,9 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td class="pt-3-half user-id" contenteditable="true">Ron@gmail.com</td>
+                          <td class="pt-3-half user-id" contenteditable="true">alice@celsius.network</td>
                           <td class="pt-3-half user-amount" contenteditable="true">30</td>
-                          <td class="pt-3-half user-commitment">
-                            0eacb4896fa4a123c71dc111b96ff6d00ad654e5943075a250ec11ec50d40aac</td>
+                          <td class="pt-3-half user-commitment">f604ac9dd5566a447c0cddc8cd655e08080b3248d39243eddfc864f49b0bb280</td>
                           <td>
                             <span class="table-remove"><button type="button"
                                 class="btn btn-danger btn-rounded btn-sm my-0">
@@ -122,11 +121,9 @@
                         </tr>
                         <!-- This is our clonable table line -->
                         <tr>
-                          <td class="pt-3-half user-id" contenteditable="true">Shimi@gmail.com</td>
+                          <td class="pt-3-half user-id" contenteditable="true">bob@celsius.network</td>
                           <td class="pt-3-half user-amount" contenteditable="true">45</td>
-                          <td class="pt-3-half user-commitment">
-                            af5248ac3a481fa9af6c03fdb4071faf509e9738d28db0945b15f99d244d89c0</td>
-                          <td>
+                          <td class="pt-3-half user-commitment">ba4a44eb2d003799fa07a824f2004f195a4f6ea01dc2b20d130787c2a41ac926</td><td>
                             <span class="table-remove"><button type="button"
                                 class="btn btn-danger btn-rounded btn-sm my-0">
                                 Remove
@@ -135,10 +132,9 @@
                         </tr>
                         <!-- This is our clonable table line -->
                         <tr>
-                          <td class="pt-3-half user-id" contenteditable="true">Guadalupe@gmail.com</td>
+                          <td class="pt-3-half user-id" contenteditable="true">ron@celsius.network</td>
                           <td class="pt-3-half user-amount" contenteditable="true">3</td>
-                          <td class="pt-3-half user-commitment">
-                            5c3b1cb5348d6dbc5697c6209a2b4814bd6be725f6cd4c10bdb15f4a55eaa591</td>
+                          <td class="pt-3-half user-commitment">a9264a3e5070c50b06c674f84a691c8ca1b1ae0be77bcc06c79551912a1c09da</td>
                           <td>
                             <span class="table-remove"><button type="button"
                                 class="btn btn-danger btn-rounded btn-sm my-0">
@@ -171,14 +167,13 @@
                   <h1 class="display-5 text-center">How to verify the audit?</h1>
                 </div>
 
-                <div class="row offset-md-1">
-                  <h4 class="display-6">Prover side</h4>
+                <div class="row ">
+                  <h4 class="display-6 offset-md-1"><u>Prover side</u></h4>
                 </div>
 
                 <div class="row offset-md-1">
-                  <h3 style="font-weight: normal">Publish 3 things <i class="bi bi-broadcast-pin"></i></h3>   
+                  <h5 class="display-7">Publish 3 things <i class="bi bi-broadcast-pin"></i></h5>   
                 </div>
-
 
                 <div class="row offset-sm-1" style="padding-left: 30px;">
                   <ul >
@@ -188,60 +183,63 @@
                   </ul>
                 </div>
 
-
-                <div class="row offset-md-1">
-                  <h4 class="display-6">Verifer side</h4>
-                </div>
-
-                <div class="row offset-md-1">
-                  <h3 style="font-weight: normal">Prover publish 3 things <i class="bi bi-broadcast-pin"></i></h3>   
-                </div>
-
-
-                <!-- 
-                <div class="row offset-md-1">
-                  <h3 style="font-weight: normal">Prover Side</h3>
-                </div> -->
-
-
-
-                <div class="row offset-md-1">
-                  <h4 style="font-weight: normal">Prover publish root node with a zkp proof of correctness <i
-                      class="bi bi-broadcast-pin"></i></h4>
-                </div>
-
                 <div class="row offset-md-1">
                   <p>In our case the root node value is <kbd
-                      id="published-root-text">0eacb4896fa4a123c71dc111b96ff6d00ad654e5943075a250ec11ec50d40aac</kbd>
-                  </p>
-                  <p>And the proof is <kbd>&#960</kbd></p>
+                      id="published-root-text">0eacb4896fa4a123c71dc111b96ff6d00ad654e5943075a250ec11ec50d40aac</kbd><br>
+                    And the proof is <kbd>&#960</kbd></p>
                 </div>
 
-                <div class="row offset-md-1 mt-5">
-                  <h3 style="font-weight: normal">Verifer compute his commitment <i class="bi bi-pen"></i></h3>
-                </div>
-                <div class="row offset-md-1">
-                  <p>Select a user to compute his commitment</p>
-                </div>
+                <div class="row">
+                  <div class="col-md-5 offset-md-1">
+                  <h4 class="display-6"><u>Verifer side</u></h4>
+                  </div>
 
-
-                <div class="row offset-md-1">
-                  <div class="col-md-3">
+                  <div class="col-md-2 offset-md-1 d-flex align-items-center">
                     <select id='user-verify-select' class="form-select"
-                      onchange="if (this.selectedIndex) computeCommitment(this.value);">
+                      onchange="if (this.selectedIndex) {computeCommitmentAndPopulate(this.value); updateGraphB(this.value);}">
                       <!-- <option value="" disabled selected hidden>Choose a User</option> -->
                     </select>
                   </div>
+
                 </div>
+
+                <div class="row offset-md-1">
+                  <h5 class="display-7">Compute its own commitment <i class="bi bi-pen"></i></h5>   
+                </div>
+
+
+                <!-- <div class="row offset-md-1 mt-5">
+                  <h3 style="font-weight: normal">Verifer compute his commitment <i class="bi bi-pen"></i></h3>
+                </div> -->
+                <!-- <div class="row offset-md-1">
+                  <p>Select a user to compute his commitment</p>
+                </div> -->
+
+                <!-- <div class="row offset-md-1">
+                  <div class="col-md-3">
+                    <select id='user-verify-select' class="form-select"
+                      onchange="if (this.selectedIndex) computeCommitment(this.value);">
+                      <option value="" disabled selected hidden>Choose a User</option> 
+                    </select>
+                  </div>
+                </div> -->
 
                 <div class="row offset-md-1 mt-3" id="verify-commitment-compution">
                   
                 </div>
 
                 <div class="row offset-md-1 mt-5">
-                  <h3 style="font-weight: normal">Verifer checks if he have a path to the root node <i
-                      class="bi bi-search"></i></h3>
+                  <h5 class="display-7">Verifer checks if he have a path to the root node <i
+                      class="bi bi-search"></i></h5>
                 </div>
+                <div class="row offset-md-1">
+                  <p>The prover provides each user an authentication path from his commitment to the liability tree's root, which is the proof for including the verifier's liability within the total sum.</p>
+                </div>        
+                
+                <div class="row offset-md-1">
+                  <graph-b id='merkle-graph-verifer'></graph-b>
+                </div>  
+
 
               </div>
             </div>
@@ -268,7 +266,28 @@
 
   <script>
 
-    function computeCommitment(userId) {
+
+    function getNodeParnetOtherChild(cmmt) {
+      let parent = d3.select('.node[node-name="'+ cmmt + '"]').datum().parent.data;
+      let firstChild = parent.children[0];
+      let secondChild = parent.children[1];
+
+      if (cmmt === firstChild.commitment) {
+        return secondChild.commitment;
+      } else {
+        return firstChild.commitment;
+      }
+    }
+
+    function getNodeParent(cmmt) {
+      return d3.select('.node[node-name="'+ cmmt + '"]').datum().parent.data.commitment;  
+    }
+
+    function collapseNode(cmmt) {
+      d3.select('.node[node-name="'+ cmmt + '"]').node().dispatchEvent(new Event('click'));
+    }
+
+    function computeCommitmentAndPopulate(userId) {
       const trs = $('#users_table > tbody > tr');
 
       let isFound = false,
@@ -292,71 +311,94 @@
         MathJax.typeset(['#commitment-eq', '#commitment-eq-2']);
       } else {
         alert('error - cant find user name on the users table');
+        return "";
       }
+
+      return commitment;
+    }
+
+    function updateGraphB(cmmt) {
+      // let node = d3.select('.node[node-name="'+ cmmt + '"]').node();
+      
+      // // get the second and get father get t
+
+      // for {
+        
+      // }
+      
+
     }
 
     const graphColor = ['#0E1766', '#710BC2', '#F63AAC', '#d281d2', '#7aa0cb', '#d281d2', '#000000', '#F6EBFF'];
 
-    $("#nav-tree-tab").click(function () {
 
-      // table to array object
-      var convertedIntoArray = [];
-      $("table#users_table tbody tr").each(function () {
-        var rowData = {};
-        var actualData = $(this).find('td');
-        if (actualData.length > 0) {
-          actualData.each(function () {
-            if ($(this).hasClass("user-id")) {
-              rowData.userId = $(this).text();
-            } else if ($(this).hasClass("user-amount")) {
-              rowData.amount = Number($(this).text());
-            } else if ($(this).hasClass("user-commitment")) {
-              rowData.commitment = $(this).text();
-            }
-          });
+    // $("#nav-tree-tab").click(function () {
+    //   // table to array object
+    //   var convertedIntoArray = [];
+    //   $("table#users_table tbody tr").each(function () {
+    //     var rowData = {};
+    //     var actualData = $(this).find('td');
+    //     if (actualData.length > 0) {
+    //       actualData.each(function () {
+    //         if ($(this).hasClass("user-id")) {
+    //           rowData.userId = $(this).text();
+    //         } else if ($(this).hasClass("user-amount")) {
+    //           rowData.amount = Number($(this).text());
+    //         } else if ($(this).hasClass("user-commitment")) {
+    //           rowData.commitment = $(this).text();
+    //         }
+    //       });
 
-          convertedIntoArray.push(rowData);
-        }
-      });
+    //       convertedIntoArray.push(rowData);
+    //     }
+    //   });
 
-      fillVerifyUserSelect(convertedIntoArray);
-      let treeArr = buildTree(convertedIntoArray);
+      
+    //   let treeArr = buildTree(convertedIntoArray);
 
-      updateVerficationRootValue(treeArr[0].commitment);
+    //   updateVerifyPage(convertedIntoArray, treeArr);
 
-      let diagramData = treeArrToTreeData(treeArr);
+    //   let diagramData = treeArrToTreeData(treeArr);
 
-      buildDiagram(diagramData);
-    });
+    //   buildDiagram(diagramData, "merkle-graph", "graph");
 
-    function fillVerifyUserSelect(usersArr) {
-      var select = document.getElementById("user-verify-select");
+    //   buildDiagram(diagramData, "merkle-graph-verifer", "graph-b");
+    // });
 
-      var i, L = select.options.length - 1;
-      for (i = L; i >= 0; i--) {
-        select.remove(i);
-      }
+    // function updateVerifyPage(convertedIntoArray, treeArr){
+    //   fillVerifyUserSelect(convertedIntoArray);
+    //   updateVerficationRootValue(treeArr[0].commitment);
 
-      var el = document.createElement("option");
-      el.textContent = "Choose a User";
-      el.value = "";
-      el.hidden = true;
-      el.disabled = true;
-      el.selected = true;
-      select.appendChild(el);
+    // }
 
-      for (var i = 0; i < usersArr.length; i++) {
-        var opt = usersArr[i].userId;
-        el = document.createElement("option");
-        el.textContent = opt;
-        el.value = opt;
-        select.appendChild(el);
-      }
-    }
+    // function fillVerifyUserSelect(usersArr) {
+    //   var select = document.getElementById("user-verify-select");
 
-    function updateVerficationRootValue(rootCommitment) {
-      $('#published-root-text').text(rootCommitment);
-    }
+    //   var i, L = select.options.length - 1;
+    //   for (i = L; i >= 0; i--) {
+    //     select.remove(i);
+    //   }
+
+    //   var el = document.createElement("option");
+    //   el.textContent = "Choose a User";
+    //   el.value = "";
+    //   el.hidden = true;
+    //   el.disabled = true;
+    //   el.selected = true;
+    //   select.appendChild(el);
+
+    //   for (var i = 0; i < usersArr.length; i++) {
+    //     var opt = usersArr[i].userId;
+    //     el = document.createElement("option");
+    //     el.textContent = opt;
+    //     el.value = opt;
+    //     select.appendChild(el);
+    //   }
+    // }
+
+    // function updateVerficationRootValue(rootCommitment) {
+    //   $('#published-root-text').text(rootCommitment);
+    // }
 
     function buildTree(records) {
 
@@ -399,7 +441,6 @@
 
       return res;
     }
-
 
     function treeArrToTreeData(array) {
       let level = 0;
@@ -444,8 +485,8 @@
       return res;
     }
 
-    function buildDiagram(treeData) {
-      const myNode = document.getElementById("merkle-graph");
+    function buildDiagram(treeData, deployToComponenetId, deployToComponenetType, isCollapsedAtInit) {
+      const myNode = document.getElementById(deployToComponenetId);
       myNode.innerHTML = '';
 
       // Set the dimensions and margins of the diagram
@@ -453,7 +494,8 @@
         width = 960 - margin.left - margin.right,
         height = 700;
 
-      var svg = d3.select("graph").append("svg")
+      // var svg = d3.select("graph").append("svg")
+      var svg = d3.select(deployToComponenetType).append("svg")
         .attr("width", width + margin.right + margin.left)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -473,7 +515,9 @@
       root.y0 = 0;
 
       // Collapse after the second level
-      root.children.forEach(collapse);
+      if (isCollapsedAtInit == true) {
+        root.children.forEach(collapse);
+      }
 
       update(root);
 
@@ -522,7 +566,7 @@
           .attr("stroke-width", "2px")
           .attr("y", (rectHeight / 2) * -1)
           .attr("rx", "1")
-          .attr('node-name', d => d.data.commitment)
+          .attr('node-name', d => d.data.commitment.trim())
           .style("fill", function (d) {
             return d.data.fill;
           });
@@ -643,7 +687,6 @@
         }
       }
     }
-
 
     function shortHash(hash) {
       let trimmedHash = hash.trim();

@@ -37,6 +37,75 @@ $("#btn-add-user").click(function () {
 });
 
 
+$("#nav-tree-tab").click(function () {
+  // table to array object
+  var convertedIntoArray = [];
+  $("table#users_table tbody tr").each(function () {
+    var rowData = {};
+    var actualData = $(this).find('td');
+    if (actualData.length > 0) {
+      actualData.each(function () {
+        if ($(this).hasClass("user-id")) {
+          rowData.userId = $(this).text();
+        } else if ($(this).hasClass("user-amount")) {
+          rowData.amount = Number($(this).text());
+        } else if ($(this).hasClass("user-commitment")) {
+          rowData.commitment = $(this).text();
+        }
+      });
+
+      convertedIntoArray.push(rowData);
+    }
+  });
+
+  
+  let treeArr = buildTree(convertedIntoArray);
+
+  updateVerifyPage(convertedIntoArray, treeArr);
+
+  let diagramData = treeArrToTreeData(treeArr);
+
+  buildDiagram(diagramData, "merkle-graph", "graph", true);
+
+  buildDiagram(diagramData, "merkle-graph-verifer", "graph-b", false);
+});
+
+function updateVerifyPage(convertedIntoArray, treeArr){
+  fillVerifyUserSelect(convertedIntoArray);
+  updateVerficationRootValue(treeArr[0].commitment);
+
+}
+
+function fillVerifyUserSelect(usersArr) {
+  var select = document.getElementById("user-verify-select");
+
+  var i, L = select.options.length - 1;
+  for (i = L; i >= 0; i--) {
+    select.remove(i);
+  }
+
+  var el = document.createElement("option");
+  el.textContent = "Choose a User";
+  el.value = "";
+  el.hidden = true;
+  el.disabled = true;
+  el.selected = true;
+  select.appendChild(el);
+
+  for (var i = 0; i < usersArr.length; i++) {
+    var opt = usersArr[i].userId;
+    el = document.createElement("option");
+    el.textContent = opt;
+    el.value = opt;
+    select.appendChild(el);
+  }
+}
+
+function updateVerficationRootValue(rootCommitment) {
+  $('#published-root-text').text(rootCommitment);
+}
+
+
 // function shortHash(hash) {
 //   let trimmedHash = hash.trim();
 //   let first = trimmedHash.substring(0,3);
