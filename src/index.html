@@ -196,7 +196,7 @@
 
                   <div class="col-md-2 offset-md-1 d-flex align-items-center">
                     <select id='user-verify-select' class="form-select"
-                      onchange="if (this.selectedIndex) {computeCommitmentAndPopulate(this.value); updateGraphB(this.value);}">
+                      onchange="if (this.selectedIndex) {let cmmt = computeCommitmentAndPopulate(this.value); updateGraphB(cmmt);}">
                       <!-- <option value="" disabled selected hidden>Choose a User</option> -->
                     </select>
                   </div>
@@ -267,24 +267,50 @@
   <script>
 
 
-    function getNodeParnetOtherChild(cmmt) {
-      let parent = d3.select('.node[node-name="'+ cmmt + '"]').datum().parent.data;
+    function getNodeParnetOtherChild(node) {
+      // let parent = d3.select('.node[node-name="'+ cmmt + '"]').datum().parent.data;
+      let cmmt = node.data.commitment;
+      let parent = node.parent.data;
+
       let firstChild = parent.children[0];
       let secondChild = parent.children[1];
 
       if (cmmt === firstChild.commitment) {
-        return secondChild.commitment;
+        return secondChild;
       } else {
-        return firstChild.commitment;
+        return firstChild;
       }
     }
 
-    function getNodeParent(cmmt) {
-      return d3.select('.node[node-name="'+ cmmt + '"]').datum().parent.data.commitment;  
+    // function getNodeParent(cmmt) {
+    //   return d3.select('.node[node-name="'+ cmmt + '"]').datum();  
+    // }
+
+    function expandAllNodesInVerifyGraph() {
+      let rootCommitment = document.getElementById("published-root-text");
+
+      let rootNode = d3.select('graph-b .node[node-name="'+ rootCommitment.innerText + '"]'); // .node().dispatchEvent(new Event('click'));
+      
+      // rescurisveExpand(rootNode);
+      rescurisveExpand(rootNode.datum());
+    }
+
+    function rescurisveExpand(node) {
+      console.log("recurisve iteration. Value:" + node.data.commitment);
+
+      if (!node.children) {
+        collapseNode(node.data.commitment);
+      }
+
+      if (node.children) {
+        rescurisveExpand(node.children[0]);
+        rescurisveExpand(node.children[1]);
+      }
+
     }
 
     function collapseNode(cmmt) {
-      d3.select('.node[node-name="'+ cmmt + '"]').node().dispatchEvent(new Event('click'));
+      d3.select('graph-b .node[node-name="'+ cmmt + '"]').node().dispatchEvent(new Event('click'));
     }
 
     function computeCommitmentAndPopulate(userId) {
@@ -318,14 +344,34 @@
     }
 
     function updateGraphB(cmmt) {
-      // let node = d3.select('.node[node-name="'+ cmmt + '"]').node();
-      
-      // // get the second and get father get t
 
-      // for {
-        
-      // }
+      console.log("expand graph before customize");
+      expandAllNodesInVerifyGraph();
+
+      console.log("input to update-graph-b: " + cmmt);
+      let currNode = d3.select('.node[node-name="'+ cmmt + '"]').datum();
+
+      console.log("currNode: " + currNode.data.commitment);
+
+      // get the second and get father get t
+
       
+      // while (d3.select('.node[node-name="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"]').datum().parent) {
+        console.log("currNode.parnet: " + currNode.parent.data.commitment);
+
+
+        while (currNode.parent) {
+          // currNode = currNode.parent;
+          // console.log("increment currNode to currNode.parent. value: " + currNode.data.commitment);
+
+          console.log("getNodeParnetOtherChild. value: " + getNodeParnetOtherChild(currNode).commitment);
+
+          console.log("trying to collapse with commitment: " + getNodeParnetOtherChild(currNode).commitment);
+
+          collapseNode(getNodeParnetOtherChild(currNode).commitment);
+
+          currNode = currNode.parent;
+        }
 
     }
 
@@ -372,7 +418,7 @@
     // }
 
     // function fillVerifyUserSelect(usersArr) {
-    //   var select = document.getElementById("user-verify-select");
+    //   var select = document.getElementById("user-verify-select"); 
 
     //   var i, L = select.options.length - 1;
     //   for (i = L; i >= 0; i--) {
