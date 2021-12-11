@@ -450,47 +450,6 @@
     //   $('#published-root-text').text(rootCommitment);
     // }
 
-    function buildTree(records) {
-
-      // build leaf level 
-      let leafLevelLength = 1;
-      for (; leafLevelLength < records.length; leafLevelLength = leafLevelLength * 2) { }
-
-      let leafLevel = [];
-
-      for (let i = 0; i < leafLevelLength; i++) {
-
-        if (i < records.length) {
-          leafLevel.push({ commitment: records[i].commitment, amount: records[i].amount });
-        } else {
-          leafLevel.push({ commitment: sha256(""), amount: 0 });
-        }
-      }
-
-      let levels = [];
-      levels.push(leafLevel);
-
-      let currLevel = leafLevel
-      for (; currLevel.length > 1;) {
-
-        let nextLevel = [];
-        for (let i = 1; i < currLevel.length; i = i + 2) {
-          let amountsSum = currLevel[i - 1].amount + currLevel[i].amount;
-          let nextItem = { commitment: sha256(amountsSum + currLevel[i - 1].commitment + currLevel[i].commitment), amount: amountsSum };
-          nextLevel.push(nextItem);
-        }
-
-        levels.push(nextLevel);
-        currLevel = nextLevel;
-      }
-
-      let res = [];
-      for (let i = levels.length; i >= 0; i--) {
-        res.push.apply(res, levels[i]);
-      }
-
-      return res;
-    }
 
     function treeArrToTreeData(array) {
       let level = 0;

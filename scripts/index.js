@@ -18,7 +18,11 @@ $(document).on("keyup", '#maintable-table tr td', function (e) {
 
   // console.log('userId: ' + userId + ' amount: ' + amount + '. sha256(' + userId + amount +') = ' + digest);  
   row.children('.user-commitment').text(digest);
+
+  buildTree();
 });
+
+buildTree();
 
 $tableID.on('click', '.table-down', function () {
   const $row = $(this).parents('tr');
@@ -37,7 +41,22 @@ $("#btn-add-user").click(function () {
 });
 
 
-$("#nav-tree-tab").click(function () {
+function buildTree() {
+
+  let usersArr = tableUsersToArray();
+  
+  let treeArr = usersArrToUsersTreeArr(usersArr);
+
+  updateVerifyPage(usersArr, treeArr);
+
+  let diagramData = treeArrToTreeData(treeArr);
+
+  buildDiagram(diagramData, "merkle-graph", "graph", true);
+
+  buildDiagram(diagramData, "merkle-graph-verifer", "graph-b", false);
+}
+
+function tableUsersToArray() {
   // table to array object
   var convertedIntoArray = [];
   $("table#users_table tbody tr").each(function () {
@@ -58,17 +77,8 @@ $("#nav-tree-tab").click(function () {
     }
   });
 
-  
-  let treeArr = buildTree(convertedIntoArray);
-
-  updateVerifyPage(convertedIntoArray, treeArr);
-
-  let diagramData = treeArrToTreeData(treeArr);
-
-  buildDiagram(diagramData, "merkle-graph", "graph", true);
-
-  buildDiagram(diagramData, "merkle-graph-verifer", "graph-b", false);
-});
+  return convertedIntoArray;
+}
 
 function updateVerifyPage(convertedIntoArray, treeArr){
   fillVerifyUserSelect(convertedIntoArray);
@@ -103,6 +113,48 @@ function fillVerifyUserSelect(usersArr) {
 
 function updateVerficationRootValue(rootCommitment) {
   $('#published-root-text').text(rootCommitment);
+}
+
+function usersArrToUsersTreeArr(records) {
+
+  // build leaf level 
+  let leafLevelLength = 1;
+  for (; leafLevelLength < records.length; leafLevelLength = leafLevelLength * 2) { }
+
+  let leafLevel = [];
+
+  for (let i = 0; i < leafLevelLength; i++) {
+
+    if (i < records.length) {
+      leafLevel.push({ commitment: records[i].commitment, amount: records[i].amount });
+    } else {
+      leafLevel.push({ commitment: sha256(""), amount: 0 });
+    }
+  }
+
+  let levels = [];
+  levels.push(leafLevel);
+
+  let currLevel = leafLevel
+  for (; currLevel.length > 1;) {
+
+    let nextLevel = [];
+    for (let i = 1; i < currLevel.length; i = i + 2) {
+      let amountsSum = currLevel[i - 1].amount + currLevel[i].amount;
+      let nextItem = { commitment: sha256(amountsSum + currLevel[i - 1].commitment + currLevel[i].commitment), amount: amountsSum };
+      nextLevel.push(nextItem);
+    }
+
+    levels.push(nextLevel);
+    currLevel = nextLevel;
+  }
+
+  let res = [];
+  for (let i = levels.length; i >= 0; i--) {
+    res.push.apply(res, levels[i]);
+  }
+
+  return res;
 }
 
 
