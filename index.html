@@ -300,8 +300,6 @@
     }
 
     function rescurisveExpand(node) {
-      console.log("recurisve iteration. Value:" + node.data.commitment.trim());
-
       if (!node.children) {
         collapseNode(node.data.commitment.trim());
       }
@@ -348,32 +346,12 @@
     }
 
     function updateGraphB(cmmt) {
-
-      console.log("expand graph before customize");
       expandAllNodesInVerifyGraph();
 
-      console.log("input to update-graph-b: " + cmmt.trim());
       let currNode = d3.select('.node[node-name="'+ cmmt.trim() + '"]').datum();
 
-      console.log("currNode: " + currNode.data.commitment.trim());
-
-      // get the second and get father get t
-
-      
-      // while (d3.select('.node[node-name="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"]').datum().parent) {
-        console.log("currNode.parnet: " + currNode.parent.data.commitment.trim());
-
-
         while (currNode.parent) {
-          // currNode = currNode.parent;
-          // console.log("increment currNode to currNode.parent. value: " + currNode.data.commitment);
-
-          console.log("getNodeParnetOtherChild. value: " + getNodeParnetOtherChild(currNode).commitment.trim());
-
-          console.log("trying to collapse with commitment: " + getNodeParnetOtherChild(currNode).commitment.trim());
-
           collapseNode(getNodeParnetOtherChild(currNode).commitment.trim());
-
           currNode = currNode.parent;
         }
 
