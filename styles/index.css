@@ -118,3 +118,19 @@ progress {
 }
 
 .pt-3-half { padding-top: 1.4rem; }
+
+.node text {
+  font: 14px robot;
+  fill: #fff;
+  font-weight: bold;
+}
+
+.node text tspan {
+  font-weight: normal;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}

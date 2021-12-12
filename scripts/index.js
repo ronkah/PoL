@@ -157,94 +157,93 @@ function usersArrToUsersTreeArr(records) {
   return res;
 }
 
+function getNodeParnetOtherChild(node) {
+  let cmmt = node.data.commitment;
+  let parent = node.parent.data;
 
-// function shortHash(hash) {
-//   let trimmedHash = hash.trim();
-//   let first = trimmedHash.substring(0,3);
-//   let last = trimmedHash.substring(trimmedHash.length - 3);
-//   let res = first + '...' + last;
+  let firstChild = parent.children[0];
+  let secondChild = parent.children[1];
 
-//   return res;
-// }
+  if (cmmt === firstChild.commitment) {
+    return secondChild;
+  } else {
+    return firstChild;
+  }
+}
 
+function expandAllNodesInVerifyGraph() {
+  let rootCommitment = document.getElementById("published-root-text");
+  let rootNode = d3.select('graph-b .node[node-name="'+ rootCommitment.innerText + '"]'); // .node().dispatchEvent(new Event('click'));
+  
+  rescurisveExpand(rootNode.datum());
+}
 
-// $("#nav-tree-tab").click(function () {
+function rescurisveExpand(node) {
+  if (!node.children) {
+    collapseNode(node.data.commitment.trim());
+  }
 
-//   // table to array object
-//   var convertedIntoArray = [];
-//   $("table#users_table tbody tr").each(function () {
-//     var rowData = {};
-//     var actualData = $(this).find('td');
-//     if (actualData.length > 0) {
-//       actualData.each(function () {
-//         if ($(this).hasClass("user-id")) {
-//           rowData.userId = $(this).text();
-//         } else if ($(this).hasClass("user-amount")) {
-//           rowData.amount = Number($(this).text());
-//         } else if ($(this).hasClass("user-commitment")) {
-//           rowData.commitment = $(this).text();
-//         }
-//       });
+  if (node.children) {
+    rescurisveExpand(node.children[0]);
+    rescurisveExpand(node.children[1]);
+  }
 
-//       convertedIntoArray.push(rowData);
-//     }
-//   });
+}
 
-//   let treeArr = buildTree(convertedIntoArray);
+function collapseNode(cmmt) {
+  d3.select('graph-b .node[node-name="'+ cmmt.trim() + '"]').node().dispatchEvent(new Event('click'));
+}
 
-//   let diagramData = treeArrToTreeData(treeArr);
+$("#user-verify-select").on('change', function() {
+  let cmmt = computeCommitmentAndPopulate(this.value); updateGraphB(cmmt);
+});
 
-//   buildDiagram(diagramData);
-// });
+function computeCommitmentAndPopulate(userId) {
+  const trs = $('#users_table > tbody > tr');
 
-// function treeArrToTreeData(array) {
-//   let level = 0;
-//   let idx = 1;
-//   let res = { name: "Balance " + array[idx - 1].amount, fill: graphColor[level], subname: shortHash(array[level].commitment) }
-//   res.children = [];
-//   // left child
+  let isFound = false;
+  let commitment = '';
+  let amount = 0;
 
-//   let left = recursivee(idx + 1, level + 1, array);
-//   if (left) {
-//     res.children.push(left);
-//   }
+  for (let i = 0; i < trs.length; i++) {
+    let ele = $(trs[i])
+    if (ele.find("td:eq(0)").text() == userId) {
+      isFound = true;
+      amount = ele.find("td:eq(1)").text().trim();
+      commitment = ele.find("td:eq(2)").text().trim();
+    }
+  }
 
-//   // right child
+  if (isFound == true) {
+    $('#verify-commitment-compution').html('');
+    $('#verify-commitment-compution').append('<p id ="commitment-eq">\\(commitment_{user} = sha256(Id_{user} | balance_{user}) = sha256(' + userId + ' | ' + amount + ')\\)');
+    $('#verify-commitment-compution').append('<p id ="commitment-eq-2">\\(commitment_{user} = ' + commitment + '\\)');
 
-//   let right = recursivee(idx + 2, level + 1, array);
-//   if (right) {
-//     res.children.push(right);
-//   }
-//   return res;
-// }
+    MathJax.typeset(['#commitment-eq', '#commitment-eq-2']);
+  } else {
+    alert('error - cant find user name on the users table');
+    return "";
+  }
 
-// function recursivee(idx, level, array) {
-//   if (idx > array.length) {
-//     return ""
-//   }
+  return commitment;
+}
 
-//   let res = { name: "Balance " + array[idx - 1].amount, fill: graphColor[level], subname: shortHash(array[idx - 1].commitment) }
-//   res.children = [];
+function updateGraphB(cmmt) {
+  expandAllNodesInVerifyGraph();
 
-//   // left child
-//   let left = recursivee(idx * 2, level+1, array);
-//   if (left) {
-//     res.children.push(left);
-//   }
+  let currNode = d3.select('.node[node-name="'+ cmmt.trim() + '"]').datum();
 
-//   // right child
-//   let right = recursivee((idx * 2) + 1, level+1, array);
-//   if (right) {
-//     res.children.push(right);
-//   }
+    while (currNode.parent) {
+      collapseNode(getNodeParnetOtherChild(currNode).commitment.trim());
+      currNode = currNode.parent;
+    }
 
-//   return res
-// }
+}
 
+// remove this - duplicate func name 
 // function buildTree(records) {
 
 //   // build leaf level 
-
 //   let leafLevelLength = 1;
 //   for (; leafLevelLength < records.length; leafLevelLength = leafLevelLength * 2) { }
 
@@ -267,7 +266,8 @@ function usersArrToUsersTreeArr(records) {
 
 //     let nextLevel = [];
 //     for (let i = 1; i < currLevel.length; i = i + 2) {
-//       let nextItem = { commitment: sha256(currLevel[i - 1].commitment + currLevel[i].commitment), amount: currLevel[i - 1].amount + currLevel[i].amount }
+//       let amountsSum = currLevel[i - 1].amount + currLevel[i].amount;
+//       let nextItem = { commitment: sha256(amountsSum + currLevel[i - 1].commitment + currLevel[i].commitment), amount: amountsSum };
 //       nextLevel.push(nextItem);
 //     }
 
@@ -277,211 +277,263 @@ function usersArrToUsersTreeArr(records) {
 
 //   let res = [];
 //   for (let i = levels.length; i >= 0; i--) {
-//     res.push.apply(res, levels[i])
+//     res.push.apply(res, levels[i]);
 //   }
 
 //   return res;
 // }
 
-// function buildDiagram(treeData) {
+function treeArrToTreeData(array) {
+  let level = 0;
+  let idx = 1;
+  let res = { name: array[idx - 1].amount.toString(), fill: graphColor[level], subname: shortHash(array[level].commitment), commitment: array[idx - 1].commitment };
+  res.children = [];
+  // left child
 
-//   // clean all children of element
-//   const myNode = document.getElementById("merkle-graph");
-//   myNode.innerHTML = '';
+  let left = recursivee(idx + 1, level + 1, array);
+  if (left) {
+    res.children.push(left);
+  }
 
-//   // Set the dimensions and margins of the diagram
-//   var margin = { top: 20, right: 90, bottom: 30, left: 90 },
-//     width = 960 - margin.left - margin.right,
-//     height = 500 - margin.top - margin.bottom;
+  // right child
+  let right = recursivee(idx + 2, level + 1, array);
+  if (right) {
+    res.children.push(right);
+  }
+  return res;
+}
 
-//   // append the svg object to the body of the page
-//   // appends a 'group' element to 'svg'
-//   // moves the 'group' element to the top left margin
-//   var svg = d3.select("graph").append("svg")
-//     .attr("width", width + margin.right + margin.left)
-//     .attr("height", height + margin.top + margin.bottom)
-//     .append("g")
-//     .attr("transform", "translate("
-//       + margin.left + "," + margin.top + ")");
+function recursivee(idx, level, array) {
+  if (idx > array.length) {
+    return "";
+  }
 
-//   var i = 0,
-//     duration = 750,
-//     root;
+  let res = { name: array[idx - 1].amount.toString(), fill: graphColor[level], subname: shortHash(array[idx - 1].commitment), commitment: array[idx - 1].commitment };
+  res.children = [];
 
-//   // declares a tree layout and assigns the size
-//   var treemap = d3.tree().size([height, width]);
+  // left child
+  let left = recursivee(idx * 2, level + 1, array);
+  if (left) {
+    res.children.push(left);
+  }
 
-//   // Assigns parent, children, height, depth
-//   root = d3.hierarchy(treeData, function (d) { return d.children; });
-//   root.x0 = height / 2;
-//   root.y0 = 0;
+  // right child
+  let right = recursivee((idx * 2) + 1, level + 1, array);
+  if (right) {
+    res.children.push(right);
+  }
 
-//   if (root.children) {
-//     // Collapse after the second level
-//     root.children.forEach(collapse);
-//   }
+  return res;
+}
 
+function buildDiagram(treeData, deployToComponenetId, deployToComponenetType, isCollapsedAtInit) {
+  const myNode = document.getElementById(deployToComponenetId);
+  myNode.innerHTML = '';
 
-//   update(root);
+  // Set the dimensions and margins of the diagram
+  var margin = { top: 20, right: 90, bottom: 30, left: 90 },
+    width = 960 - margin.left - margin.right,
+    height = 700;
 
-//   // Collapse the node and all it's children
-//   function collapse(d) {
-//     if (d.children) {
-//       d._children = d.children
-//       d._children.forEach(collapse)
-//       d.children = null
-//     }
-//   }
+  // var svg = d3.select("graph").append("svg")
+  var svg = d3.select(deployToComponenetType).append("svg")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate("
+      + margin.left + "," + margin.top + ")");
 
-//   function update(source) {
+  var i = 0,
+    duration = 750,
+    root;
 
-//     // Assigns the x and y position for the nodes
-//     var treeData = treemap(root);
+  // declares a tree layout and assigns the size
+  var treemap = d3.tree().size([height, width]);
 
-//     // Compute the new tree layout.
-//     var nodes = treeData.descendants(),
-//       links = treeData.descendants().slice(1);
+  // Assigns parent, children, height, depth
+  root = d3.hierarchy(treeData, function (d) { return d.children; });
+  root.x0 = height / 2;
+  root.y0 = 0;
 
-//     // Normalize for fixed-depth.
-//     nodes.forEach(function (d) { d.y = d.depth * 180 });
+  // Collapse after the second level
+  if (isCollapsedAtInit == true) {
+    root.children.forEach(collapse);
+  }
 
-//     // ****************** Nodes section ***************************
+  update(root);
 
-//     // Update the nodes...
-//     var node = svg.selectAll('g.node')
-//       .data(nodes, function (d) { return d.id || (d.id = ++i); });
+  // Collapse the node and all it's children
+  function collapse(d) {
+    if (d.children) {
+      d._children = d.children
+      d._children.forEach(collapse)
+      d.children = null
+    }
+  }
 
-//     // Enter any new modes at the parent's previous position.
-//     var nodeEnter = node.enter().append('g')
-//       .attr('class', 'node')
-//       .attr("transform", function (d) {
-//         return "translate(" + source.y0 + "," + source.x0 + ")";
-//       })
-//       .on('click', click);
+  function update(source) {
 
-//     var rectHeight = 60, rectWidth = 120;
+    // Assigns the x and y position for the nodes
+    var treeData = treemap(root);
 
-//     nodeEnter.append('rect')
-//       .attr('class', 'node')
-//       .attr("width", rectWidth)
-//       .attr("height", rectHeight)
-//       .attr("x", 0)
-//       .attr("y", (rectHeight / 2) * -1)
-//       .attr("rx", "5")
-//       .style("fill", function (d) {
-//         return d.data.fill;
-//       });
+    // Compute the new tree layout.
+    var nodes = treeData.descendants(),
+      links = treeData.descendants().slice(1);
 
-//     // Add labels for the nodes
-//     nodeEnter.append('text')
-//       .attr("dy", "-.35em")
-//       .attr("x", function (d) {
-//         return 13;
-//       })
-//       .attr("text-anchor", function (d) {
-//         return "start";
-//       })
-//       .text(function (d) { return d.data.name; })
-//       .append("tspan")
-//       .attr("dy", "1.75em")
-//       .attr("x", function (d) {
-//         return 13;
-//       })
-//       .text(function (d) { return d.data.subname; });
+    // Normalize for fixed-depth.
+    nodes.forEach(function (d) { d.y = d.depth * 180 });
 
-//     // UPDATE
-//     var nodeUpdate = nodeEnter.merge(node);
+    // Update the nodes...
+    var node = svg.selectAll('g.node')
+      .data(nodes, function (d) { return d.id || (d.id = ++i); });
 
-//     // Transition to the proper position for the node
-//     nodeUpdate.transition()
-//       .duration(duration)
-//       .attr("transform", function (d) {
-//         return "translate(" + d.y + "," + d.x + ")";
-//       });
+    // Enter any new modes at the parent's previous position.
+    var nodeEnter = node.enter().append('g')
+      .attr('class', 'node')
+      .attr("transform", function (d) {
+        return "translate(" + source.x0 + "," + source.y0 + ")";
+      })
+      .on('click', click);
 
-//     // Update the node attributes and style
-//     nodeUpdate.select('circle.node')
-//       .attr('r', 10)
-//       .style("fill", function (d) {
-//         return d._children ? "lightsteelblue" : "#fff";
-//       })
-//       .attr('cursor', 'pointer');
+    var rectHeight = 60, rectWidth = 60;
+
+    nodeEnter.append('rect')
+      .on('click', click)
+      .attr('class', 'node')
+      .attr("width", rectWidth)
+      .attr("height", rectHeight)
+      .attr("x", 0)
+      .attr("stroke", "grey")
+      .attr("stroke-width", "2px")
+      .attr("y", (rectHeight / 2) * -1)
+      .attr("rx", "1")
+      .attr('node-name', d => d.data.commitment.trim())
+      .style("fill", function (d) {
+        return d.data.fill;
+      });
 
 
-//     // Remove any exiting nodes
-//     var nodeExit = node.exit().transition()
-//       .duration(duration)
-//       .attr("transform", function (d) {
-//         return "translate(" + source.y + "," + source.x + ")";
-//       })
-//       .remove();
+    // Add labels for the nodes
+    nodeEnter.append('text')
+      .attr("dy", "-.35em")
+      .attr("x", function (d) {
+        return 20;
+      })
+      .attr("text-anchor", function (d) {
+        return "start";
+      })
+      .text(function (d) { return d.data.name; })
+      .append("tspan")
+      .attr("dy", "1.75em")
+      .attr("x", function (d) {
+        return 13;
+      })
+      .text(function (d) { return d.data.subname; }).attr("x", function (d) {
+        return 4;
+      });
 
-//     // On exit reduce the node circles size to 0
-//     nodeExit.select('circle')
-//       .attr('r', 1e-6);
+    // UPDATE
+    var nodeUpdate = nodeEnter.merge(node);
 
-//     // On exit reduce the opacity of text labels
-//     nodeExit.select('text')
-//       .style('fill-opacity', 1e-6);
+    // Transition to the proper position for the node
+    nodeUpdate.transition()
+      .duration(duration)
+      .attr("transform", function (d) {
+        return "translate(" + d.x + "," + d.y + ")";
+      });
 
-//     // ****************** links section ***************************
+    // Update the node attributes and style
+    nodeUpdate.select('circle.node')
+      .attr('r', 10)
+      .style("fill", function (d) {
+        return d._children ? "lightsteelblue" : "#fff";
+      })
+      .attr('cursor', 'pointer');
 
-//     // Update the links...
-//     var link = svg.selectAll('path.link')
-//       .data(links, function (d) { return d.id; });
 
-//     // Enter any new links at the parent's previous position.
-//     var linkEnter = link.enter().insert('path', "g")
-//       .attr("class", "link")
-//       .attr('d', function (d) {
-//         var o = { x: source.x0, y: source.y0 }
-//         return diagonal(o, o)
-//       });
+    // Remove any exiting nodes
+    var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function (d) {
+        return "translate(" + source.x + "," + source.y + ")";
+      })
+      .remove();
 
-//     // UPDATE
-//     var linkUpdate = linkEnter.merge(link);
+    // On exit reduce the node circles size to 0
+    nodeExit.select('circle')
+      .attr('r', 1e-6);
 
-//     // Transition back to the parent element position
-//     linkUpdate.transition()
-//       .duration(duration)
-//       .attr('d', function (d) { return diagonal(d, d.parent) });
+    // On exit reduce the opacity of text labels
+    nodeExit.select('text')
+      .style('fill-opacity', 1e-6);
 
-//     // Remove any exiting links
-//     var linkExit = link.exit().transition()
-//       .duration(duration)
-//       .attr('d', function (d) {
-//         var o = { x: source.x, y: source.y }
-//         return diagonal(o, o)
-//       })
-//       .remove();
+    // ****************** links section ***************************
 
-//     // Store the old positions for transition.
-//     nodes.forEach(function (d) {
-//       d.x0 = d.x;
-//       d.y0 = d.y;
-//     });
+    // Update the links...
+    var link = svg.selectAll('path.link')
+      .data(links, function (d) { return d.id; });
 
-//     // Creates a curved (diagonal) path from parent to the child nodes
-//     function diagonal(s, d) {
+    // Enter any new links at the parent's previous position.
+    var linkEnter = link.enter().insert('path', "g")
+      .attr("class", "link")
+      .attr('d', function (d) {
+        var o = { x: source.x0, y: source.y0 }
+        return diagonal(o, o)
+      });
 
-//       let path = `M ${s.y} ${s.x}
-//               C ${(s.y + d.y) / 2} ${s.x},
-//                 ${(s.y + d.y) / 2} ${d.x},
-//                 ${d.y} ${d.x}`
+    // UPDATE
+    var linkUpdate = linkEnter.merge(link);
 
-//       return path
-//     }
+    // Transition back to the parent element position
+    linkUpdate.transition()
+      .duration(duration)
+      .attr('d', function (d) { return diagonal(d, d.parent) });
 
-//     // Toggle children on click.
-//     function click(d) {
-//       if (d.children) {
-//         d._children = d.children;
-//         d.children = null;
-//       } else {
-//         d.children = d._children;
-//         d._children = null;
-//       }
-//       update(d);
-//     }
-//   }
-// }
+    // Remove any exiting links
+    var linkExit = link.exit().transition()
+      .duration(duration)
+      .attr('d', function (d) {
+        var o = { x: source.x, y: source.y }
+        return diagonal(o, o)
+      })
+      .remove();
+
+    // Store the old positions for transition.
+    nodes.forEach(function (d) {
+      d.x0 = d.x;
+      d.y0 = d.y;
+    });
+
+    // Creates a curved (diagonal) path from parent to the child nodes
+    function diagonal(s, d) {
+
+      let path = `M ${s.x + (rectWidth / 2)} ${s.y}
+          C ${(s.x + d.x) / 2 + (rectWidth / 2)} ${s.y},
+            ${(s.x + d.x) / 2 + (rectWidth / 2)} ${d.y},
+            ${d.x + (rectWidth / 2)} ${d.y}`
+
+      return path
+    }
+
+    // Toggle children on click.
+    function click(d) {
+      if (d.children) {
+        d._children = d.children;
+        d.children = null;
+      } else {
+        d.children = d._children;
+        d._children = null;
+      }
+      update(d);
+    }
+  }
+}
+
+function shortHash(hash) {
+  let trimmedHash = hash.trim();
+  let first = trimmedHash.substring(0, 3);
+  let last = trimmedHash.substring(trimmedHash.length - 3);
+  let res = first + '...' + last;
+
+  return res;
+}
