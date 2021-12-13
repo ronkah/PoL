@@ -215,9 +215,35 @@ function computeCommitmentAndPopulate(userId) {
   }
 
   if (isFound == true) {
-    $('#verify-commitment-compution').html('');
-    $('#verify-commitment-compution').append('<p id ="commitment-eq">\\(commitment_{user} = sha256(Id_{user} | balance_{user}) = sha256(' + userId + ' | ' + amount + ')\\)');
-    $('#verify-commitment-compution').append('<p id ="commitment-eq-2">\\(commitment_{user} = ' + commitment + '\\)');
+    let rowDiv = $('#verify-commitment-compution').html('');
+
+    const formulaDiv = document.createElement("div");
+    formulaDiv.classList.add("col-md-9");
+    formulaDiv.innerHTML = '<p id ="commitment-eq">\\(commitment_{user} = sha256(Id_{user} | balance_{user}) = sha256(' + userId + ' | ' + amount + ')\\)' + 
+    '<p id ="commitment-eq-2">\\(commitment_{user} = ' + commitment + '\\)';
+
+    const externalVerifyDiv = document.createElement("div");
+    externalVerifyDiv.classList.add("col-md-3");
+
+    const verifyBtn = document.createElement("button");
+    verifyBtn.classList.add("btn");
+    verifyBtn.classList.add("btn-info");
+    verifyBtn.textContent = "Verify externally";
+    verifyBtn.onclick = function() {VerifyCommitmentExternally(userId,amount)};
+    externalVerifyDiv.append(verifyBtn);
+    rowDiv.append(formulaDiv);
+    rowDiv.append(externalVerifyDiv);
+
+    // <div class="col-md-10" id="user-compution-commitment-formula">
+
+    // </div>
+    // <div class="col-md-2">
+    //   <button class="btn btn-success" onclick=" window.open('https://md5calc.com/hash/sha256/ron@celsius.network3')">Verify hash externally</button>
+    // </div>
+
+    // $('#verify-commitment-compution').html('');
+    // $('#verify-commitment-compution').append('<p id ="commitment-eq">\\(commitment_{user} = sha256(Id_{user} | balance_{user}) = sha256(' + userId + ' | ' + amount + ')\\)');
+    // $('#verify-commitment-compution').append('<p id ="commitment-eq-2">\\(commitment_{user} = ' + commitment + '\\)');
 
     MathJax.typeset(['#commitment-eq', '#commitment-eq-2']);
   } else {
@@ -226,6 +252,10 @@ function computeCommitmentAndPopulate(userId) {
   }
 
   return commitment;
+}
+
+function VerifyCommitmentExternally(uName, amount) {
+  window.open('https://md5calc.com/hash/sha256/' + uName + amount);
 }
 
 function updateGraphB(cmmt) {
