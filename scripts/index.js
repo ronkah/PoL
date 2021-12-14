@@ -427,27 +427,46 @@ function buildDiagram(treeData, deployToComponenetId, deployToComponenetType, is
 
     var rectHeight = 60, rectWidth = 60;
 
-    nodeEnter.append('rect')
+    // nodeEnter.append('arc')
+    nodeEnter.append('circle')
       .on('click', click)
-      .attr('class', 'node')
-      .attr("width", rectWidth)
-      .attr("height", rectHeight)
+      // .attr('class', 'node')
+      // .attr("width", rectWidth)
+      // .attr("height", rectHeight)
       .attr("x", 0)
       .attr("stroke", "grey")
+      .attr("r", 50)
+      .attr("cy", 30)
+      .attr("cx", 30)
       .attr("stroke-width", "2px")
-      .attr("y", (rectHeight / 2) * -1)
-      .attr("rx", "1")
+      // .attr("y", (rectHeight / 2) * -1)
+      // .attr("rx", "1")
       .attr('node-name', d => d.data.commitment.trim())
       .style("fill", function (d) {
         return d.data.fill;
       });
+
+    // nodeEnter.append('rect')
+    //   .on('click', click)
+    //   .attr('class', 'node')
+    //   .attr("width", rectWidth)
+    //   .attr("height", rectHeight)
+    //   .attr("x", 0)
+    //   .attr("stroke", "grey")
+    //   .attr("stroke-width", "2px")
+    //   .attr("y", (rectHeight / 2) * -1)
+    //   .attr("rx", "1")
+    //   .attr('node-name', d => d.data.commitment.trim())
+    //   .style("fill", function (d) {
+    //     return d.data.fill;
+    //   });
 
 
     // Add labels for the nodes
     nodeEnter.append('text')
       .attr("dy", "-.35em")
       .attr("x", function (d) {
-        return 20;
+        return 0;
       })
       .attr("text-anchor", function (d) {
         return "start";
@@ -456,10 +475,11 @@ function buildDiagram(treeData, deployToComponenetId, deployToComponenetType, is
       .append("tspan")
       .attr("dy", "1.75em")
       .attr("x", function (d) {
-        return 13;
+        return 0;
       })
-      .text(function (d) { return d.data.subname; }).attr("x", function (d) {
-        return 4;
+      .text(function (d) { return d.data.subname; })
+      .attr("x", function (d) {
+        return 0;
       });
 
     // UPDATE
