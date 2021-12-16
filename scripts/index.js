@@ -173,7 +173,7 @@ function getNodeParnetOtherChild(node) {
 
 function expandAllNodesInVerifyGraph() {
   let rootCommitment = document.getElementById("published-root-text");
-  let rootNode = d3.select('graph-b .node[node-name="'+ rootCommitment.innerText + '"]'); // .node().dispatchEvent(new Event('click'));
+  let rootNode = d3.select('graph-b[node-name="'+ rootCommitment.innerText + '"]'); // .node().dispatchEvent(new Event('click'));
   
   rescurisveExpand(rootNode.datum());
 }
@@ -191,7 +191,7 @@ function rescurisveExpand(node) {
 }
 
 function collapseNode(cmmt) {
-  d3.select('graph-b .node[node-name="'+ cmmt.trim() + '"]').node().dispatchEvent(new Event('click'));
+  d3.select('graph-b [node-name="'+ cmmt.trim() + '"]').node().dispatchEvent(new Event('click'));
 }
 
 $("#user-verify-select").on('change', function() {
@@ -429,7 +429,8 @@ function buildDiagram(treeData, deployToComponenetId, deployToComponenetType, is
 
     // nodeEnter.append('arc')
     nodeEnter.append('circle')
-      .on('click', click)
+    .on('click', click)
+    // .attr('class', 'node')
       // .attr('class', 'node')
       // .attr("width", rectWidth)
       // .attr("height", rectHeight)
@@ -439,9 +440,9 @@ function buildDiagram(treeData, deployToComponenetId, deployToComponenetType, is
       .attr("cy", 30)
       .attr("cx", 30)
       .attr("stroke-width", "2px")
+      .attr('node-name', d => d.data.commitment.trim())
       // .attr("y", (rectHeight / 2) * -1)
       // .attr("rx", "1")
-      .attr('node-name', d => d.data.commitment.trim())
       .style("fill", function (d) {
         return d.data.fill;
       });
@@ -464,7 +465,7 @@ function buildDiagram(treeData, deployToComponenetId, deployToComponenetType, is
 
     // Add labels for the nodes
     nodeEnter.append('text')
-      .attr("dy", "-.35em")
+      .attr("dy", "20px")
       .attr("x", function (d) {
         return 0;
       })
@@ -473,7 +474,7 @@ function buildDiagram(treeData, deployToComponenetId, deployToComponenetType, is
       })
       .text(function (d) { return d.data.name; })
       .append("tspan")
-      .attr("dy", "1.75em")
+      .attr("dy", "30px")
       .attr("x", function (d) {
         return 0;
       })
