@@ -173,14 +173,13 @@ function getNodeParnetOtherChild(node) {
 
 function expandAllNodesInVerifyGraph() {
   let rootCommitment = document.getElementById("published-root-text");
-  let rootNode = d3.select('graph-b .node[node-name="'+ rootCommitment.innerText + '"]'); // .node().dispatchEvent(new Event('click'));
-  
+  let rootNode = d3.select('graph-b .node[node-name="'+ rootCommitment.innerText + '"]');
   rescurisveExpand(rootNode.datum());
 }
 
 function rescurisveExpand(node) {
   if (!node.children) {
-    collapseNode(node.data.commitment.trim());
+    collapseNodeOnGraphB(node.data.commitment.trim());
   }
 
   if (node.children) {
@@ -190,8 +189,8 @@ function rescurisveExpand(node) {
 
 }
 
-function collapseNode(cmmt) {
-  d3.select('graph-b .node[node-name="'+ cmmt.trim() + '"]').node().dispatchEvent(new Event('click'));
+function collapseNodeOnGraphB(cmmt) {
+  $('#merkle-graph-verifer [node-name="'+ cmmt.trim() + '"]').parent()[0].dispatchEvent(new Event('click'));
 }
 
 $("#user-verify-select").on('change', function() {
@@ -234,17 +233,6 @@ function computeCommitmentAndPopulate(userId) {
     rowDiv.append(formulaDiv);
     rowDiv.append(externalVerifyDiv);
 
-    // <div class="col-md-10" id="user-compution-commitment-formula">
-
-    // </div>
-    // <div class="col-md-2">
-    //   <button class="btn btn-success" onclick=" window.open('https://md5calc.com/hash/sha256/ron@celsius.network3')">Verify hash externally</button>
-    // </div>
-
-    // $('#verify-commitment-compution').html('');
-    // $('#verify-commitment-compution').append('<p id ="commitment-eq">\\(commitment_{user} = sha256(Id_{user} | balance_{user}) = sha256(' + userId + ' | ' + amount + ')\\)');
-    // $('#verify-commitment-compution').append('<p id ="commitment-eq-2">\\(commitment_{user} = ' + commitment + '\\)');
-
     MathJax.typeset(['#commitment-eq', '#commitment-eq-2']);
   } else {
     alert('error - cant find user name on the users table');
@@ -264,54 +252,11 @@ function updateGraphB(cmmt) {
   let currNode = d3.select('.node[node-name="'+ cmmt.trim() + '"]').datum();
 
     while (currNode.parent) {
-      collapseNode(getNodeParnetOtherChild(currNode).commitment.trim());
+      collapseNodeOnGraphB(getNodeParnetOtherChild(currNode).commitment.trim());
       currNode = currNode.parent;
     }
 
 }
-
-// remove this - duplicate func name 
-// function buildTree(records) {
-
-//   // build leaf level 
-//   let leafLevelLength = 1;
-//   for (; leafLevelLength < records.length; leafLevelLength = leafLevelLength * 2) { }
-
-//   let leafLevel = [];
-
-//   for (let i = 0; i < leafLevelLength; i++) {
-
-//     if (i < records.length) {
-//       leafLevel.push({ commitment: records[i].commitment, amount: records[i].amount });
-//     } else {
-//       leafLevel.push({ commitment: sha256(""), amount: 0 });
-//     }
-//   }
-
-//   let levels = [];
-//   levels.push(leafLevel);
-
-//   let currLevel = leafLevel
-//   for (; currLevel.length > 1;) {
-
-//     let nextLevel = [];
-//     for (let i = 1; i < currLevel.length; i = i + 2) {
-//       let amountsSum = currLevel[i - 1].amount + currLevel[i].amount;
-//       let nextItem = { commitment: sha256(amountsSum + currLevel[i - 1].commitment + currLevel[i].commitment), amount: amountsSum };
-//       nextLevel.push(nextItem);
-//     }
-
-//     levels.push(nextLevel);
-//     currLevel = nextLevel;
-//   }
-
-//   let res = [];
-//   for (let i = levels.length; i >= 0; i--) {
-//     res.push.apply(res, levels[i]);
-//   }
-
-//   return res;
-// }
 
 function treeArrToTreeData(array) {
   let level = 0;
@@ -427,39 +372,35 @@ function buildDiagram(treeData, deployToComponenetId, deployToComponenetType, is
 
     var rectHeight = 60, rectWidth = 60;
 
-    nodeEnter.append('rect')
-      .on('click', click)
+    nodeEnter.append('circle')
       .attr('class', 'node')
-      .attr("width", rectWidth)
-      .attr("height", rectHeight)
       .attr("x", 0)
       .attr("stroke", "grey")
+      .attr("r", 44)
+      .attr("cy", 30)
+      .attr("cx", 30)
       .attr("stroke-width", "2px")
-      .attr("y", (rectHeight / 2) * -1)
-      .attr("rx", "1")
       .attr('node-name', d => d.data.commitment.trim())
       .style("fill", function (d) {
         return d.data.fill;
       });
 
-
     // Add labels for the nodes
     nodeEnter.append('text')
-      .attr("dy", "-.35em")
+      .attr("dy", "20px")
       .attr("x", function (d) {
-        return 20;
+        return 23;
       })
-      .attr("text-anchor", function (d) {
-        return "start";
-      })
+      
       .text(function (d) { return d.data.name; })
       .append("tspan")
-      .attr("dy", "1.75em")
+      .attr("dy", "30px")
       .attr("x", function (d) {
-        return 13;
+        return 0;
       })
-      .text(function (d) { return d.data.subname; }).attr("x", function (d) {
-        return 4;
+      .text(function (d) { return d.data.subname; })
+      .attr("x", function (d) {
+        return 3;
       });
 
     // UPDATE
@@ -473,12 +414,12 @@ function buildDiagram(treeData, deployToComponenetId, deployToComponenetType, is
       });
 
     // Update the node attributes and style
-    nodeUpdate.select('circle.node')
-      .attr('r', 10)
-      .style("fill", function (d) {
-        return d._children ? "lightsteelblue" : "#fff";
-      })
-      .attr('cursor', 'pointer');
+    // nodeUpdate.select('circle.node')
+    //   .attr('r', 10)
+    //   .style("fill", function (d) {
+    //     return d._children ? "lightsteelblue" : "#fff";
+    //   })
+    //   .attr('cursor', 'pointer');
 
 
     // Remove any exiting nodes
