@@ -3,7 +3,11 @@
 const graphColor = ['#0E1766','#710BC2','#F63AAC','#d281d2', '#7aa0cb', '#d281d2','#000000','#F6EBFF'];
 
 const $tableID = $('#maintable-table');
-$tableID.on('click', '.table-remove', function () { $(this).parents('tr').detach(); });
+$tableID.on('click', '.table-remove', function () { 
+  $(this).parents('tr').detach(); 
+  buildTree();
+
+});
 $tableID.on('click', '.table-up', function () {
   const $row = $(this).parents('tr');
   if ($row.index() === 0) { return; } $row.prev().before($row.get(0));
