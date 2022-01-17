@@ -18,9 +18,8 @@ $(document).on("keyup", '#maintable-table tr td', function (e) {
   const row = $(this).parents('tr');
   var userId = row.children('.user-id').text().toLowerCase();
   var amount = row.children('.user-amount').text();
-  let digest = sha256(userId + amount);
+  let digest = sha256(userId + '|' + amount);
 
-  // console.log('userId: ' + userId + ' amount: ' + amount + '. sha256(' + userId + amount +') = ' + digest);  
   row.children('.user-commitment').text(digest);
 
   buildTree();
@@ -247,7 +246,7 @@ function computeCommitmentAndPopulate(userId) {
 }
 
 function VerifyCommitmentExternally(uName, amount) {
-  window.open('https://md5calc.com/hash/sha256/' + uName + amount);
+  window.open('https://md5calc.com/hash/sha256/' + uName + '|' + amount);
 }
 
 function updateGraphB(cmmt) {
